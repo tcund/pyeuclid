@@ -310,6 +310,10 @@ class Vector2:
         n = other.normalized()
         return self.dot(n)*n
 
+    def rotate(self, angle):
+        rotate_matrix = Matrix3.new_rotate(angle).T
+        return rotate_matrix * self
+
 class Vector3:
     __slots__ = ['x', 'y', 'z']
     __hash__ = None
@@ -611,6 +615,20 @@ class Matrix3:
         M.j = self.j
         M.k = self.k
         return M
+
+    @property
+    def T(self):
+        new = Matrix3()
+        new.a = self.a
+        new.b = self.e
+        new.c = self.i
+        new.e = self.b
+        new.f = self.f
+        new.g = self.j
+        new.i = self.c
+        new.j = self.g
+        new.k = self.k
+        return new
 
     copy = __copy__
     def __repr__(self):
@@ -1836,8 +1854,8 @@ class Line2(Geometry):
         else:
             raise AttributeError('%r' % (args,))
         
-        if not self.v:
-            raise AttributeError('Line has zero-length vector')
+        #if not self.v:
+        #    raise AttributeError('Line has zero-length vector')
 
     def __copy__(self):
         return self.__class__(self.p, self.v)
